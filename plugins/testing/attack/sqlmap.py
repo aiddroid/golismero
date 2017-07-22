@@ -35,7 +35,7 @@ from golismero.api.data.vulnerability.injection.sql import SQLInjection
 from golismero.api.external import run_external_tool, find_binary_in_path, tempdir, get_tools_folder
 from golismero.api.logger import Logger
 from golismero.api.net import ConnectionSlot
-from golismero.api.net.web_utils import WEB_SERVERS_VARS
+from golismero.api.net.web_utils import WEB_SERVERS_VARS, generate_user_agent
 from golismero.api.plugin import TestingPlugin
 
 
@@ -82,16 +82,21 @@ class SQLMapTestingPlugin(TestingPlugin):
             # Add the user args
             args.extend(user_args)
 
+            # Add user agent.
+            if Config.audit_config.user_agent:
+                useragent = Config.audit_config.user_agent.lower()
+                if (useragent == 'random'):
+                    useragent = generate_user_agent()
+                args.extend(["--user-agent", useragent])
+
+            # Add Cookie
+            if Config.audit_config.cookie:
+                args.extend(["--cookie", ";".join(["%s=%s" % (k, v) for k, v in Config.audit_config.cookie.iteritems()])])
+
             #
             # GET Parameters injection
             #
             if info.has_url_params:
-
-                args.extend([
-                    "-p",
-                    ",".join([x for x in info.url_params if x not in WEB_SERVERS_VARS]),
-                ])
-
                 r = self.make_injection(info.url, args)
                 if r:
                     results.extend(self.parse_sqlmap_results(info, output_dir))

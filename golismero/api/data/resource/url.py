@@ -202,7 +202,7 @@ class URL(_AbstractURL):
             referer = None
         if not isinstance(method, str):
             raise TypeError("Expected string, got %r instead" % type(method))
-        if post_params is not None and not isinstance(post_params, dict):
+        if post_params is not None and not isinstance(post_params, dict) and not isinstance(post_params, str):
             raise TypeError("Expected dict, got %r instead" % type(post_params))
         if referer is not None and not isinstance(referer, str):
             raise TypeError("Expected string, got %r instead" % type(referer))

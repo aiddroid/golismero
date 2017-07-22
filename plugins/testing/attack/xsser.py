@@ -40,7 +40,7 @@ from golismero.api.external import run_external_tool, tempfile, \
     find_binary_in_path, get_tools_folder
 from golismero.api.logger import Logger
 from golismero.api.net import ConnectionSlot
-from golismero.api.net.web_utils import WEB_SERVERS_VARS
+from golismero.api.net.web_utils import WEB_SERVERS_VARS, generate_user_agent
 from golismero.api.plugin import TestingPlugin
 
 try:
@@ -90,47 +90,30 @@ class XSSerPlugin(TestingPlugin):
                 "1"
             ]
 
+            # Set target url
+            args.extend(["-u", info.url])
+
             # Add the user args
             args.extend(user_args)
 
+            # Add user agent
+            if Config.audit_config.user_agent:
+                useragent = Config.audit_config.user_agent.lower()
+                if (useragent == 'random'):
+                    useragent = generate_user_agent()
+                args.extend(["--user-agent", useragent])
+
+            # Add Cookie
+            if Config.audit_config.cookie:
+                args.extend(["--cookie", ";".join(["%s=%s" % (k, v) for k, v in Config.audit_config.cookie.iteritems()])])
+
             if info.has_url_params:
-
-                # Get payload for config injection point
-                args.extend([
-                    "-u",
-                    "%s://%s" % (info.parsed_url.scheme, info.parsed_url.host),
-                ])
-
-                # When we want to try GET parameters, we must pass to xsser one by one.
-                for param, value in info.parsed_url.query_params.iteritems():
-
-                    # Not evaluate web server params
-                    if param in WEB_SERVERS_VARS:
-                        continue
-
-                    # Prepare and reorder params
-                    fixed_params = "&".join(["%s=%s" % (x, y) for x, y in info.parsed_url.query_params.iteritems() if x != param])
-
-                    # Add param to text + fixed params
-                    if fixed_params: # -> empty fixed params
-                        params = "%s?%s&%s=" % (info.parsed_url.path, fixed_params, param)
-                    else:
-                        params = "%s?%s=" % (info.parsed_url.path, param)
-
-                    # Prepary args for xsser
-                    args.extend([
-                        "-g",
-                        params
-                    ])
-
-                    # Run xsser
-                    if self.run_xsser(info.hostname, info.url, args):
-                        results.extend(self.parse_xsser_result(info, filename))
+                # Run xsser
+                if self.run_xsser(info.hostname, info.url, args):
+                    results.extend(self.parse_xsser_result(info, filename))
 
             if info.has_post_params:
                 args.extend([
-                    "-u",
-                    info.url,
                     "-p",
                     "&".join(
                         ["%s=%s" % (k, v)

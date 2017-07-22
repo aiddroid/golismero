@@ -118,6 +118,8 @@ class AbstractScope (object):
         result.extend( Domain(domain) for domain in self.domains )
         result.extend( Domain(root) for root in self.roots )
         result.extend( URL(url) for url in self.web_pages )
+        if self.audit_config.data:
+            result.append(URL(self.audit_config.targets[0], method="POST", post_params=self.audit_config.data))
         return result
 
 
@@ -165,6 +167,7 @@ class AuditScope (AbstractScope):
     #--------------------------------------------------------------------------
     def __init__(self, audit_config = None):
 
+        self.__audit_config = audit_config
         # This is where we'll keep the parsed targets.
         self.__domains   = set()   # Domain names.
         self.__roots     = set()   # Domain names for subdomain matching.
@@ -180,6 +183,12 @@ class AuditScope (AbstractScope):
     @property
     def has_scope(self):
         return True
+
+
+    #--------------------------------------------------------------------------
+    @property
+    def audit_config(self):
+        return self.__audit_config
 
 
     #--------------------------------------------------------------------------

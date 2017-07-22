@@ -8,4 +8,4 @@ Copyright   = Copyright (C) 2011-2014 GoLismero Project
 License     = GNU Public License v2
 
 [Arguments]
-args = --auto --user-agent "GoLismero" --timeout "20"
+args = --auto --timeout "20"

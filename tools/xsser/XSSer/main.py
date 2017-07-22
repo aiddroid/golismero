@@ -610,7 +610,7 @@ class xsser(EncoderDecoder, XSSerReporter):
             dest_url, newhash = self.get_url_payload(url, payload, query_string)
             #self.report(dest_url)
             self._prepare_extra_attacks()
-            pool.addRequest(c.get, [dest_url], _cb, _error_cb)
+            pool.addRequest(c.get, [[dest_url]], _cb, _error_cb)
             self._ongoing_requests += 1
             #c.get(dest_url)
 
@@ -618,9 +618,9 @@ class xsser(EncoderDecoder, XSSerReporter):
             dest_url, newhash = self.get_url_payload("", payload, query_string)
             dest_url = dest_url.strip().replace("/", "", 1)
             self.report("\nSending POST:", query_string, "\n")
-            data = c.post(url, dest_url)
+            # data = c.post(url, dest_url)
             self._prepare_extra_attacks()
-            pool.addRequest(c.get, [dest_url], _cb, _error_cb)
+            pool.addRequest(c.post, [[url, dest_url]], _cb, _error_cb)
             self._ongoing_requests += 1
             #c.post(url, dest_url)
 

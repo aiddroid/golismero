@@ -126,7 +126,8 @@ def data_from_http_response(response):
 
     # If we have no data, return None.
     if not response.data:
-        return None
+        from ..data.information.html import HTML
+        return HTML(response.data)
 
     # Get the MIME content type.
     content_type = response.content_type
@@ -138,7 +139,8 @@ def data_from_http_response(response):
     # Sanitize the content type.
     content_type = content_type.strip().lower()
     if "/" not in content_type:
-        return None
+        from ..data.information.html import HTML
+        return HTML(response.data)
 
     # Parse the data.
     data = None

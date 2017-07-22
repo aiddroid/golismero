@@ -20,7 +20,7 @@ Tuning  = x6
 
 # A list of plugins prepared by the GoLismero team.
 plugins = apacheusers;auth;cgi;clientaccesspolicy;content_search;cookies;dictionary;
- fileops;headers;;msgs;mutiple_index;outdated;paths;report_csv;ssl;tests;
+ fileops;headers;;msgs;mutiple_index;outdated;paths;report_csv;ssl;
 
 # A more conservative list of plugins.
 #plugins = nikto_auth, nikto_cgi, nikto_clientaccesspolicy,

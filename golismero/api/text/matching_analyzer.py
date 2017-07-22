@@ -129,7 +129,8 @@ class MatchingAnalyzer(object):
         :type min_deviation: float
         """
         if not base_text:
-            raise ValueError("Base text cannot be empty")
+            # raise ValueError("Base text cannot be empty")
+            pass
         if not isinstance(base_text, basestring):
             raise TypeError("Expected string , got %r instead" % type(base_text))
         if not isinstance(min_ratio, float):

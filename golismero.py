@@ -325,6 +325,7 @@ def cmdline_parser():
     gr_net.add_argument("-pa","--proxy-addr", metavar="ADDRESS", help="HTTP proxy address")
     gr_net.add_argument("-pn","--proxy-port", metavar="PORT", help="HTTP proxy port number")
     gr_net.add_argument("--cookie", metavar="COOKIE", help="set cookie for requests")
+    gr_net.add_argument("--data", metavar="DATA", help="set post data for requests")
     gr_net.add_argument("--user-agent", metavar="USER_AGENT", help="set a custom user agent or 'random' value")
     cmd = gr_net.add_argument("--cookie-file", metavar="FILE", action=ReadValueFromFileAction, dest="cookie", help="load a cookie from file")
     if autocomplete_enabled:

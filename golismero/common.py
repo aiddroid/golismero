@@ -924,6 +924,9 @@ class AuditConfig (Configuration):
         # Cookie
         "cookie": Configuration.string,
 
+        # Data
+        "data": Configuration.string,
+
         # User Agent
         "user_agent": Configuration.string,
     }
@@ -1144,6 +1147,36 @@ class AuditConfig (Configuration):
         else:
             cookie = None
         self._cookie = cookie
+
+
+    #--------------------------------------------------------------------------
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, data):
+        if data:
+            # Parse the data argument.
+            try:
+                if isinstance(data, unicode):
+                    data = data.encode("UTF-8")
+
+                if "=" in data:
+                    # Prepare data.
+                    data = data.replace("=", ":")
+                    # Split.
+                    data = data.split("&")
+                    # Parse.
+                    data = { d.split(":")[0]:d.split(":")[1] for d in data}
+            except ValueError:
+                raise ValueError(
+                    "Invalid data format specified."
+                    " Use this format: 'Key1=value1&key2=value2'.")
+        else:
+            data = None
+        self._data = data
 
 
     #--------------------------------------------------------------------------
